@@ -51,11 +51,11 @@ for row = 8:19
 
     % save the cell data in appropriate field
     % locations of data harcoded for now, fix later?
-    classData.(letterGrade).GPA = T{row, 4};
-    classData.(letterGrade).NumberOfStudents = T{row, 5};
-    classData.(letterGrade).GradePointxNumber = T{row, 7};
-    classData.(letterGrade).PercentOfStudents = T{row, 9};
-    classData.(letterGrade).SuggestedPercent = T{row, 12};
+    classData.Grades.(letterGrade).GPA = T{row, 4};
+    classData.Grades.(letterGrade).NumberOfStudents = T{row, 5};
+    classData.Grades.(letterGrade).GradePointxNumber = T{row, 7};
+    classData.Grades.(letterGrade).PercentOfStudents = T{row, 9};
+    classData.Grades.(letterGrade).SuggestedPercent = T{row, 12};
 end
         
 % totals for the class
