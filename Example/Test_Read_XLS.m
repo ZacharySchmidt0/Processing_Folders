@@ -7,19 +7,24 @@ clear
 %ssds = spreadsheetDatastore("MecE260_UNDERGRAD Grade Dist Form.xlsx")
 %sheetnames(ssds,1)
 filename = "MecE260_UNDERGRAD Grade Dist Form.xlsx";
-T = readtable(filename,'Sheet','SECOND YEAR');
+T = readcell(filename,'Sheet','SECOND YEAR');
+T(cellfun(@(x) isa(x,'missing'), T)) = {''};
 
 data = struct;
-valueFlag = 0;
 
-for i = 1:size(T.Properties.VariableNames, 2)
-    if ~strcmp(extractBetween(T.Properties.VariableNames(i), 1, 3), 'Var')
-        if valueFlag == 0
-            field = T.Properties.VariableNames(i);
-            valueFlag = 1;
-        elseif valueFlag == 1
-            [data(:).(field{1})] = T.Properties.VariableNames(i);
-            valueFlag = 0;
-        end     
+for row = 3:4
+    valueFlag = 0;
+    for col = 1:size(T, 2)
+        if (~strcmp(T{row, col}, ''))
+            if valueFlag == 0
+                field = T{row, col};
+                field = strrep(field, ' ', '_');
+                field = strrep(field, ':', '');
+                valueFlag = 1;
+            elseif valueFlag == 1
+                data.(field) = T{row, col};
+                valueFlag = 0;
+            end     
+        end
     end
 end
