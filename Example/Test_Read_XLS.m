@@ -29,8 +29,8 @@ for row = 3:4
     end
 end
 
-structTemplate = struct('GPA', '', 'NumberOfStudents', '', ...
-    'GradePointxNumber', '', 'PercentOfStudents', '', 'SuggestedPercent', '');
+structTemplate = struct('GradePointValue', '', 'NumberOfStudents', '', ...
+    'TotalGradePoints', '', 'PercentOfStudents', '', 'SuggestedPercent', '');
 
 for row = 8:19
     letterGrade = T{row, 3};
