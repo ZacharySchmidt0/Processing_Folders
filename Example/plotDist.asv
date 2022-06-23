@@ -1,9 +1,0 @@
-function plotDist(classData)
-
-fields = fieldnames(classData.Grades);
-fieldArr = [];
-percentArr = [];
-
-for i = 1:numel(fields)
-    fieldArr(i) = fields(i);
-    
