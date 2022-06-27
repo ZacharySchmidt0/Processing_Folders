@@ -1,7 +1,18 @@
 % Developed by: Jason Kim, Zachary Schmidt
-% Last Revised: June 27, 2022
+% Summer 2022, University of Alberta
 
-% P
+% Parses a configuration file with all potential names of departments,
+% instructors, and course numbers along with alternative names. Saves this
+% data in a struct.
+%
+% Parameters:
+%   filename (char array): name of the configuration file
+%
+% Returns:
+%   configData (struct): struct with fields 'Departments', 'Instructors',
+%   and 'CourseNums'. Each of these is a struct with fields as the
+%   preferred names and values as a cell array of alternatives under that
+%   field.
 function configData = readConfig(filename)
 
 close all
@@ -15,8 +26,10 @@ configData = struct;
 configData.Departments = struct;
 configData.Instructors = struct;
 configData.CourseNums = struct;
+
 for col = 1:size(Config, 2)
     switch Config{1, col}
+        % only 3 options in configuration file
         case 'Department'
             field = 'Departments';
         case 'Instructor'
@@ -24,14 +37,13 @@ for col = 1:size(Config, 2)
         case 'Course Number'
             field = 'CourseNums';
     end
-    for row = 2:size(Config, 1)
+    prefName = Config{2, col};  % preferred name is first entry under header
+    prefName = strrep(prefName, ' ', '_');
+    prefName = strrep(prefName, '.', '__1');
+    configData.(field).(prefName) = {};  % alt names stored in cell array
+    for row = 3:size(Config, 1)
         if ~strcmp(Config{row, col}, '')
-            innerField = strrep(Config{row, col}, ' ', '_');  % field names can't contain whitespace
-            innerField = strrep(innerField, '.', '__1');  % field names can't contain . so replace with flag
-            innerField = lower(innerField);
-            configData.(field).(innerField) = {};
-            configData.(field).(innerField){end + 1} = Config{row, col};  % append to cell array
+            configData.(field).(prefName){end + 1} = Config{row, col};  % append to cell array
         end
     end
 end
-

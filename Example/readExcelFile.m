@@ -1,11 +1,11 @@
 % Developed by: Jason Kim, Zachary Schmidt
-% Last Revised: June 24, 2022
+% Summer 2022, University of Alberta
 
 % Entry point to read one grade distribution Excel file
 % Saves classData as a .mat file in the current directory
 
 disp("Finding files...")
-distFiles = findDistFiles();
+distFiles = findDistFiles('Distribution Files');
 configData = readConfig('configuration_file');
 classData = struct;
 

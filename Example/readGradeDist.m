@@ -1,5 +1,5 @@
 % Developed by: Jason Kim, Zachary Schmidt
-% Last Revised: June 27, 2022
+% Summer 2022, University of Alberta
 
 % Parses one Grade Distribution file and organizes
 % the data into a struct.
