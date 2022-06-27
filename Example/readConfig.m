@@ -28,6 +28,7 @@ for col = 1:size(Config, 2)
         if ~strcmp(Config{row, col}, '')
             innerField = strrep(Config{row, col}, ' ', '_');  % field names can't contain whitespace
             innerField = strrep(innerField, '.', '__1');  % field names can't contain . so replace with flag
+            innerField = lower(innerField);
             configData.(field).(innerField) = {};
             configData.(field).(innerField){end + 1} = Config{row, col};  % append to cell array
         end

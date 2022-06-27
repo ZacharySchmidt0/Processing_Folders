@@ -60,13 +60,14 @@ for row = 3:4  % rows 3 and 4 contain info about class (instructor, dept)
                 field = Class{row, col};  % save the field, retrieved when we get the value
                 field = strrep(field, ' ', '_');  % field names can't contain _
                 field = strrep(field, ':', '');  % field names can't contain :
+                field = lower(field);
                 valueFlag = 1;
             elseif valueFlag == 1
                 % cell is a value
                 errormsg = ['The entry on row ', num2str(row), ' and column ', num2str(col), ' is not present in the configuration file.'];
                 switch field
                     case 'Department'
-                        if ~isfield(Class{row, col}, configData.Departments)
+                        if ~isfield(field, configData.Departments)
                             % department entry is not preferred name
                             fieldNames = fieldnames(configData.Departments);
                             foundAltName = 0;
@@ -75,7 +76,7 @@ for row = 3:4  % rows 3 and 4 contain info about class (instructor, dept)
                                 % replace flags with original values
                                 configFieldName = strrep(configData.Departments.(fieldNames{i}), '_', ' ');
                                 configFieldName = strrep(configFieldName, '__1', '.');
-                                if strcmp(Class{row, col}, configFieldName)
+                                if strcmp(field, configFieldName)
                                     % alternative name found
                                     foundAltName = 1;
                                     Class{row, col} = configFieldName;
@@ -87,7 +88,7 @@ for row = 3:4  % rows 3 and 4 contain info about class (instructor, dept)
                             end
                         end
                     case 'Instructor'
-                        if ~isfield(Class{row, col}, configData.Instructors)
+                        if ~isfield(field, configData.Instructors)
                             % instructor entry is not preferred name
                             fieldNames = fieldnames(configData.Instructors);
                             foundAltName = 0;
@@ -96,7 +97,7 @@ for row = 3:4  % rows 3 and 4 contain info about class (instructor, dept)
                                 % replace flags with original values
                                 configFieldName = strrep(configData.Instructors.(fieldNames{i}), '_', ' ');
                                 configFieldName = strrep(configFieldName, '__1', '.');
-                                if strcmp(Class{row, col}, configFieldName)
+                                if strcmp(field, configFieldName)
                                     % alternative name found
                                     foundAltName = 1;
                                     Class{row, col} = configFieldName;
@@ -108,7 +109,7 @@ for row = 3:4  % rows 3 and 4 contain info about class (instructor, dept)
                             end
                         end
                     case 'Course_number'
-                        if ~isfield(Class{row, col}, configData.CourseNums)
+                        if ~isfield(field, configData.CourseNums)
                             % course number entry is not preferred name
                             fieldNames = fieldnames(configData.CourseNums);
                             foundAltName = 0;
@@ -117,7 +118,7 @@ for row = 3:4  % rows 3 and 4 contain info about class (instructor, dept)
                                 % replace flags with original values
                                 configFieldName = strrep(configData.CourseNums.(fieldNames{i}), '_', ' ');
                                 configFieldName = strrep(configFieldName, '__1', '.');
-                                if strcmp(Class{row, col}, configFieldName)
+                                if strcmp(field, configFieldName)
                                     % alternative name found
                                     foundAltName = 1;
                                     Class{row, col} = configFieldName;
