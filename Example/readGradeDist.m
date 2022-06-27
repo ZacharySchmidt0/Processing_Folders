@@ -1,5 +1,5 @@
 % Developed by: Jason Kim, Zachary Schmidt
-% Last Revised: June 23, 2022
+% Last Revised: June 27, 2022
 
 % Parses one Grade Distribution file and organizes
 % the data into a struct.
@@ -24,42 +24,112 @@
 %       GradePointxNumber (double): totals grade points earned in class
 %   classGPA (double): mean GPA for course
 %   medianGrade (char array): median letter grade for course
-function classData = readGradeDist(filename)
+function classData = readGradeDist(filename, configData)
 
 close all
 
 % finding the only non-empty sheet
 % read first year sheet, if instructor is blank, go to next, and so on
-T = readcell(filename,'Sheet','FIRST YEAR');
-T(cellfun(@(x) isa(x,'missing'), T)) = {''};  % replace missing cells with empty string
-if strcmp(T{3, 12}, '')  % row 3, col 12 is instructor location
-    T = readcell(filename,'Sheet','SECOND YEAR');
-    T(cellfun(@(x) isa(x,'missing'), T)) = {''};
+Class = readcell(filename,'Sheet','FIRST YEAR');
+Class(cellfun(@(x) isa(x,'missing'), Class)) = {''};  % replace missing cells with empty string
+if strcmp(Class{3, 12}, '')  % row 3, col 12 is instructor location
+    Class = readcell(filename,'Sheet','SECOND YEAR');
+    Class(cellfun(@(x) isa(x,'missing'), Class)) = {''};
 end
-if strcmp(T{3, 12}, '')
-    T = readcell(filename,'Sheet','THIRD YEAR');
-    T(cellfun(@(x) isa(x,'missing'), T)) = {''};
+if strcmp(Class{3, 12}, '')
+    Class = readcell(filename,'Sheet','THIRD YEAR');
+    Class(cellfun(@(x) isa(x,'missing'), Class)) = {''};
 end
-if strcmp(T{3, 12}, '')
-    T = readcell(filename,'Sheet','FOURTH YEAR');
-    T(cellfun(@(x) isa(x,'missing'), T)) = {''};
+if strcmp(Class{3, 12}, '')
+    Class = readcell(filename,'Sheet','FOURTH YEAR');
+    Class(cellfun(@(x) isa(x,'missing'), Class)) = {''};
+    if strcmp(Class{3, 12}, '')
+        % No instructor name on any sheet
+        error('Instructor is blank on all sheets in file ' + filename)
+    end
 end
 
 classData = struct;
 
 for row = 3:4  % rows 3 and 4 contain info about class (instructor, dept)
     valueFlag = 0;
-    for col = 1:size(T, 2)
-        if (~strcmp(T{row, col}, ''))
+    for col = 1:size(Class, 2)
+        if (~strcmp(Class{row, col}, ''))
             if valueFlag == 0
                 % cell value is a field (not a value)
-                field = T{row, col};  % save the field, retrieved when we get the value
+                field = Class{row, col};  % save the field, retrieved when we get the value
                 field = strrep(field, ' ', '_');  % field names can't contain _
                 field = strrep(field, ':', '');  % field names can't contain :
                 valueFlag = 1;
             elseif valueFlag == 1
                 % cell is a value
-                classData.(field) = T{row, col};
+                errormsg = ['The entry on row ', num2str(row), ' and column ', num2str(col), ' is not present in the configuration file.'];
+                switch field
+                    case 'Department'
+                        if ~isfield(Class{row, col}, configData.Departments)
+                            % department entry is not preferred name
+                            fieldNames = fieldnames(configData.Departments);
+                            foundAltName = 0;
+                            for i = 1:numel(fieldNames)
+                                % check if entry is an alternative name
+                                % replace flags with original values
+                                configFieldName = strrep(configData.Departments.(fieldNames{i}), '_', ' ');
+                                configFieldName = strrep(configFieldName, '__1', '.');
+                                if strcmp(Class{row, col}, configFieldName)
+                                    % alternative name found
+                                    foundAltName = 1;
+                                    Class{row, col} = configFieldName;
+                                end
+                            end
+                            if foundAltName == 0
+                                % entry is not main or alt name
+                                error(errormsg)
+                            end
+                        end
+                    case 'Instructor'
+                        if ~isfield(Class{row, col}, configData.Instructors)
+                            % instructor entry is not preferred name
+                            fieldNames = fieldnames(configData.Instructors);
+                            foundAltName = 0;
+                            for i = 1:numel(fieldNames)
+                                % check if entry is an alternative name
+                                % replace flags with original values
+                                configFieldName = strrep(configData.Instructors.(fieldNames{i}), '_', ' ');
+                                configFieldName = strrep(configFieldName, '__1', '.');
+                                if strcmp(Class{row, col}, configFieldName)
+                                    % alternative name found
+                                    foundAltName = 1;
+                                    Class{row, col} = configFieldName;
+                                end
+                            end
+                            if foundAltName == 0
+                                % entry is not main or alt name
+                                error(errormsg)
+                            end
+                        end
+                    case 'Course_number'
+                        if ~isfield(Class{row, col}, configData.CourseNums)
+                            % course number entry is not preferred name
+                            fieldNames = fieldnames(configData.CourseNums);
+                            foundAltName = 0;
+                            for i = 1:numel(fieldNames)
+                                % check if entry is an alternative name
+                                % replace flags with original values
+                                configFieldName = strrep(configData.CourseNums.(fieldNames{i}), '_', ' ');
+                                configFieldName = strrep(configFieldName, '__1', '.');
+                                if strcmp(Class{row, col}, configFieldName)
+                                    % alternative name found
+                                    foundAltName = 1;
+                                    Class{row, col} = configFieldName;
+                                end
+                            end
+                            if foundAltName == 0
+                                % entry is not main or alt name
+                                error(errormsg)
+                            end
+                        end
+                end
+                classData.(field) = Class{row, col};
                 valueFlag = 0;
             end     
         end
@@ -68,26 +138,26 @@ end
 
 for row = 8:19
     % the main class data in rows 8-19
-    letterGrade = T{row, 3};
+    letterGrade = Class{row, 3};
     letterGrade = strrep(letterGrade, '+', '_plus');  % field names can't contain +
     letterGrade = strrep(letterGrade, '–', '_minus');  % field names can't contain -
 
     % save the cell data in appropriate field
     % FIXME: locations of data harcoded for now
-    classData.Grades.(letterGrade).GPA = T{row, 4};
-    classData.Grades.(letterGrade).NumberOfStudents = T{row, 5};
-    classData.Grades.(letterGrade).GradePointxNumber = T{row, 7};
-    classData.Grades.(letterGrade).PercentOfStudents = T{row, 9};
-    classData.Grades.(letterGrade).SuggestedPercent = T{row, 12};
+    classData.Grades.(letterGrade).GPA = Class{row, 4};
+    classData.Grades.(letterGrade).NumberOfStudents = Class{row, 5};
+    classData.Grades.(letterGrade).GradePointxNumber = Class{row, 7};
+    classData.Grades.(letterGrade).PercentOfStudents = Class{row, 9};
+    classData.Grades.(letterGrade).SuggestedPercent = Class{row, 12};
 end
         
 % totals for the class
 % FIXME: locations of data harcoded for now
 classData.Totals = struct;
-classData.Totals.NumberOfStudents = T{20, 5};
-classData.Totals.GradePointxNumber = T{20, 7};
+classData.Totals.NumberOfStudents = Class{20, 5};
+classData.Totals.GradePointxNumber = Class{20, 7};
 
 % calculations done in Excel
 % FIXME: locations of data harcoded for now
-classData.classGPA = T{22, 15};
-classData.medianGrade = T{27, 15};
+classData.classGPA = Class{22, 15};
+classData.medianGrade = Class{27, 15};
