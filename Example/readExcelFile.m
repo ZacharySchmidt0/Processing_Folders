@@ -5,10 +5,14 @@
 % Saves classData as a .mat file in the current directory
 
 disp("Finding files...")
+
+% saves filepaths organized by semester (all F2021 together)
 distFiles = findDistFiles('Distribution Files');
+
 configData = readConfig('configuration_file');
 classData = struct;
 
+% fieldNames are all semesters
 fieldNames = fieldnames(distFiles);
 
 for i = 1:numel(fieldNames)
@@ -16,6 +20,7 @@ for i = 1:numel(fieldNames)
         if ~isfield(classData, fieldNames{i})
             classData.(fieldNames{i}) = [];
         end
+        % store classData structs in the same semester under the same field
         classData.(fieldNames{i}) = [classData.(fieldNames{i}) readGradeDist(distFiles.(fieldNames{i}){j}, configData)];
         disp(classData)
     end
