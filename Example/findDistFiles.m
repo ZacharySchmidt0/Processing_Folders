@@ -15,7 +15,7 @@
 function distFiles = findDistFiles(folderName)
 
 % findfiles returns all Excel files in the folderName folder
-allExcel = findfiles('*.xlsx', folderName);
+allExcel = findfiles('MecE*?.xlsx', folderName);
 
 distFiles = struct;
 
