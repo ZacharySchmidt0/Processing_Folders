@@ -4,15 +4,8 @@
 % Entry point to read one grade distribution Excel file
 % Saves classData as a .mat file in the current directory
 
-disp("Finding files...")
-filenames = findfiles('MecE*?.xlsx');
-disp(filenames)
+filename = input("Enter path to Excel file: ");
 configData = readConfig('configuration_file');
-classData = [];
 
-for i = 1:size(filenames)
-    classData = [classData readGradeDist(filenames{i}, configData)];
-    disp(classData)
-end
-
+classData = readGradeDist(filename, configData);
 save("classData.mat", "classData")
