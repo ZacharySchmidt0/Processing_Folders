@@ -25,6 +25,9 @@ for i = 1:size(allExcel, 1)
             otherwise
                 error('Invalid first char in folder name, should be F or W or S: ' + allExcel{i})
         end
+        if ~isfield(distFiles, semesterName)
+            distFiles.(semesterName) = {};
+        end
         distFiles.(semesterName){end + 1} = allExcel{i};
     end
 end

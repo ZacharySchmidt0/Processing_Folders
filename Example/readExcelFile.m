@@ -5,14 +5,20 @@
 % Saves classData as a .mat file in the current directory
 
 disp("Finding files...")
-filenames = findfiles('MecE*?.xlsx');
-disp(filenames)
+distFiles = findDistFiles();
 configData = readConfig('configuration_file');
-classData = [];
+classData = struct;
 
-for i = 1:size(filenames)
-    classData = [classData readGradeDist(filenames{i}, configData)];
-    disp(classData)
+fieldNames = fieldnames(distFiles);
+
+for i = 1:numel(fieldNames)
+    for j = 1:size(distFiles.(fieldNames{i}), 2)
+        if ~isfield(classData, fieldNames{i})
+            classData.(fieldNames{i}) = [];
+        end
+        classData.(fieldNames{i}) = [classData.(fieldNames{i}) readGradeDist(distFiles.(fieldNames{i}){j}, configData)];
+        disp(classData)
+    end
 end
 
 save("classData.mat", "classData")
