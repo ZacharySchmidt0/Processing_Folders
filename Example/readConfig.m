@@ -6,13 +6,14 @@
 % data in a struct.
 %
 % Parameters:
-%   filename (char array): name of the configuration file
+%   filename (char array): name of the configuration file (must be in
+%   current directory)
 %
 % Returns:
 %   configData (struct): struct with fields 'Departments', 'Instructors',
-%   and 'CourseNums'. Each of these is a struct with fields as the
-%   preferred names and values as a cell array of alternatives under that
-%   field.
+%   and 'CourseNums'. Each of these is a nested cell array with each
+%   individual cell containing a cell array with the preferred name
+%   as the first entry and the alterative names as proceeding entries.
 function configData = readConfig(filename)
 
 close all
@@ -23,12 +24,12 @@ Config(cellfun(@(x) isa(x,'missing'), Config)) = {''};  % replace missing cells 
 
 configData = struct;
 
-configData.Departments = struct;
-configData.Instructors = struct;
-configData.CourseNums = struct;
+configData.Departments = {};
+configData.Instructors = {};
+configData.CourseNums = {};
 
-for col = 1:size(Config, 2)
-    switch Config{1, col}
+for row = 1:size(Config, 1)
+    switch Config{row, 1}
         % only 3 options in configuration file
         case 'Department'
             field = 'Departments';
@@ -37,13 +38,11 @@ for col = 1:size(Config, 2)
         case 'Course Number'
             field = 'CourseNums';
     end
-    prefName = Config{2, col};  % preferred name is first entry under header
-    prefName = strrep(prefName, ' ', '_');
-    prefName = strrep(prefName, '.', '__1');
-    configData.(field).(prefName) = {};  % alt names stored in cell array
-    for row = 3:size(Config, 1)
+    interCell = {};  % used to store pref & alt names, appended to configData at end
+    for col = 2:size(Config, 2)
         if ~strcmp(Config{row, col}, '')
-            configData.(field).(prefName){end + 1} = Config{row, col};  % append to cell array
+            interCell{end + 1} = Config{row, col};
         end
     end
+    configData.(field){end + 1} = interCell;  % append to cell array
 end

@@ -1,0 +1,46 @@
+% Developed by: Jason Kim, Zachary Schmidt
+% Summer 2022, University of Alberta
+
+% Parses a configuration file with all potential names of departments,
+% instructors, and course numbers along with alternative names. Saves this
+% data in a struct.
+%
+% Parameters:
+%   filename (char array): name of the configuration file
+%
+% Returns:
+%   configData (struct): struct with fields 'Departments', 'Instructors',
+%   and 'CourseNums'. Each of these is a struct with fields as the
+%   preferred names and values as a cell array of alternatives under that
+%   field.
+function configData = readConfig(filename)
+
+close all
+
+Config = readcell(filename);
+
+Config(cellfun(@(x) isa(x,'missing'), Config)) = {''};  % replace missing cells with empty string
+
+configData = struct;
+
+configData.Departments = {};
+configData.Instructors = {};
+configData.CourseNums = {};
+
+for col = 1:size(Config, 2)
+    switch Config{1, col}
+        % only 3 options in configuration file
+        case 'Department'
+            field = 'Departments';
+        case 'Instructor'
+            field = 'Instructors';
+        case 'Course Number'
+            field = 'CourseNums';
+    end
+    configData.(field){end + 1} = {};  % alt names stored in cell array
+    for row = 3:size(Config, 1)
+        if ~strcmp(Config{row, col}, '')
+            configData.(field){end + 1}{end + 1} = Config{row, col};  % append to cell array
+        end
+    end
+end

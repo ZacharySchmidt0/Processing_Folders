@@ -64,70 +64,61 @@ for row = 3:4  % rows 3 and 4 contain info about class (instructor, dept)
                 valueFlag = 1;
             elseif valueFlag == 1
                 % cell is a value
-                errormsg = ['The entry on row ', num2str(row), ' and column ', num2str(col), ' is not present in the configuration file.'];
+                errormsg = ['The entry on row ', num2str(row), ' and column ', num2str(col), ' in file "', filename, '" is not present in the configuration file.'];
                 switch field
-                    case 'Department'
-                        if ~isfield(field, configData.Departments)
-                            % department entry is not preferred name
-                            fieldNames = fieldnames(configData.Departments);
-                            foundAltName = 0;
-                            for i = 1:numel(fieldNames)
+                    case 'department'
+                        foundAltName = 0;
+                        for i = 1:numel(configData.Departments)
+                            configFieldName = configData.Departments{i}{1};
+                            for j = 1:numel(configData.Departments{i})
                                 % check if entry is an alternative name
                                 % replace flags with original values
-                                configFieldName = strrep(configData.Departments.(fieldNames{i}), '_', ' ');
-                                configFieldName = strrep(configFieldName, '__1', '.');
-                                if strcmp(field, configFieldName)
+                                if strcmp(Class{row, col}, configData.Departments{i}{j})
                                     % alternative name found
                                     foundAltName = 1;
                                     Class{row, col} = configFieldName;
                                 end
-                            end
-                            if foundAltName == 0
-                                % entry is not main or alt name
-                                error(errormsg)
                             end
                         end
-                    case 'Instructor'
-                        if ~isfield(field, configData.Instructors)
-                            % instructor entry is not preferred name
-                            fieldNames = fieldnames(configData.Instructors);
-                            foundAltName = 0;
-                            for i = 1:numel(fieldNames)
+                        if foundAltName == 0
+                            % entry is not main or alt name
+                            error(errormsg)
+                        end
+                    case 'instructor'
+                        foundAltName = 0;
+                        for i = 1:numel(configData.Instructors)
+                            configFieldName = configData.Instructors{i}{1};
+                            for j = 1:numel(configData.Instructors{i})
                                 % check if entry is an alternative name
                                 % replace flags with original values
-                                configFieldName = strrep(configData.Instructors.(fieldNames{i}), '_', ' ');
-                                configFieldName = strrep(configFieldName, '__1', '.');
-                                if strcmp(field, configFieldName)
+                                if strcmp(Class{row, col}, configData.Instructors{i}{j})
                                     % alternative name found
                                     foundAltName = 1;
                                     Class{row, col} = configFieldName;
                                 end
-                            end
-                            if foundAltName == 0
-                                % entry is not main or alt name
-                                error(errormsg)
                             end
                         end
-                    case 'Course_number'
-                        if ~isfield(field, configData.CourseNums)
-                            % course number entry is not preferred name
-                            fieldNames = fieldnames(configData.CourseNums);
-                            foundAltName = 0;
-                            for i = 1:numel(fieldNames)
+                        if foundAltName == 0
+                            % entry is not main or alt name
+                            error(errormsg)
+                        end
+                    case 'course_number'
+                        foundAltName = 0;
+                        for i = 1:numel(configData.CourseNums)
+                            configFieldName = configData.CourseNums{i}{1};
+                            for j = 1:numel(configData.CourseNums{i})
                                 % check if entry is an alternative name
                                 % replace flags with original values
-                                configFieldName = strrep(configData.CourseNums.(fieldNames{i}), '_', ' ');
-                                configFieldName = strrep(configFieldName, '__1', '.');
-                                if strcmp(field, configFieldName)
+                                if strcmp(Class{row, col}, configData.CourseNums{i}{j})
                                     % alternative name found
                                     foundAltName = 1;
                                     Class{row, col} = configFieldName;
                                 end
                             end
-                            if foundAltName == 0
-                                % entry is not main or alt name
-                                error(errormsg)
-                            end
+                        end
+                        if foundAltName == 0
+                            % entry is not main or alt name
+                            error(errormsg)
                         end
                 end
                 classData.(field) = Class{row, col};
