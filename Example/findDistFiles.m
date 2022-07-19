@@ -15,7 +15,7 @@
 function distFiles = findDistFiles(folderName)
 
 % findfiles returns all Excel files in the folderName folder
-allExcel = findfiles('MecE*?.xlsx', folderName);
+allExcel = findfiles('*.xlsx', folderName);
 
 distFiles = struct;
 
@@ -32,9 +32,14 @@ for i = 1:size(allExcel, 1)
         % Folder name doesn't start with F or W or S (season of semester)
         error(['Invalid first char in folder name, should be F or W or S: ', allExcel{i}])
     end
-    % append the file path to distFiles under the field semesterName 
-    if ~isfield(distFiles, semesterName)
-        distFiles.(semesterName) = {};
+    firstSheet = readcell(allExcel{i}, 'Sheet', '');
+    if strcmp(firstSheet{1,1}, 'Instructions for Faculty of Engineering Grade Reporting Sheets')
+        % Only append actual grade dist files, check if first cell on first
+        % sheet matches template
+        % append the file path to distFiles under the field semesterName 
+        if ~isfield(distFiles, semesterName)
+            distFiles.(semesterName) = {};
+        end
+        distFiles.(semesterName){end + 1} = allExcel{i};
     end
-    distFiles.(semesterName){end + 1} = allExcel{i};
 end
