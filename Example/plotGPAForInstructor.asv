@@ -1,0 +1,7 @@
+function plotGPAForInstructor(classData, instructor)
+
+semesters = fieldNames(classData);
+
+for i=1:numel(semesters)
+    for j=1:numel(classData.semesters)
+        if classData.(semesters(i))
