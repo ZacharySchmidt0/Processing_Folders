@@ -1,0 +1,12 @@
+function plotGPAForCourse(classData, course)
+    fieldNms = fieldnames(classData);
+    total = 0
+    for i=1:numel(fieldNms)
+        structArray = classData.(fieldNms{i});
+        for j=1:numel(structArray)
+            struct = structArray(j);
+            if (struct.course == course)
+                total += struct
+            end
+        end
+    end
