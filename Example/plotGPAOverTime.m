@@ -10,7 +10,13 @@
 %   alt name found in configuration_file.xlsx
 %   className (char array) - name of the course. Can be a main or alt
 %   name found in configuration_file.xlsx
-function plotGPAForInstructor(classData, instructor, className)
+function plotGPAOverTime(classData, instructor, className)
+
+allInstructors = 0;
+if strcmp(instructor, '*')
+    allInstructors = 1;
+    instructor = 'All instructors';
+end
 
 % Pulling configuration info. File name hardcoded
 configData = readConfig('configuration_file');
@@ -18,22 +24,24 @@ configData = readConfig('configuration_file');
 % Checking if instructor name is a main or alt name. If it is a main name, 
 % it is left alone. If it is an alt name, it is converted to the main name.
 % If it is not a main or alt name, an error is thrown.
-foundAltName = 0;
-for i = 1:numel(configData.Instructors)
-    configFieldName = configData.Instructors{i}{1};
-    for j = 1:numel(configData.Instructors{i})
-        % check if entry is an alternative name
-        % replace flags with original values
-        if strcmp(instructor, configData.Instructors{i}{j})
-            % alternative name found
-            foundAltName = 1;
-            instructor = configFieldName;
+if allInstructors == 0
+    foundAltName = 0;
+    for i = 1:numel(configData.Instructors)
+        configFieldName = configData.Instructors{i}{1};
+        for j = 1:numel(configData.Instructors{i})
+            % check if entry is an alternative name
+            % replace flags with original values
+            if strcmp(instructor, configData.Instructors{i}{j})
+                % alternative name found
+                foundAltName = 1;
+                instructor = configFieldName;
+            end
         end
     end
-end
-if foundAltName == 0
-    % entry is not main or alt name
-    error('Instructor name is not a main or alt name found in config file')
+    if foundAltName == 0
+        % entry is not main or alt name
+        error('Instructor name is not a main or alt name found in config file')
+    end
 end
 
 % Same as above but checking className
@@ -64,10 +72,12 @@ for i=1:numel(semesters)
     currentSemester = char(semesters(i));
     for j=1:numel(classData.(currentSemester))
         currentClass = classData.(currentSemester)(j);
-        if strcmp(currentClass.instructor, instructor) && strcmp(currentClass.course_number, className)
-            % only want specified courses offered by the specified
-            % instructor
-            gpaOverTime.(currentSemester) = currentClass.classGPA;
+        if strcmp(currentClass.instructor, instructor) || allInstructors == 1
+            % only want sepcified instructor (or all instructors)
+            if strcmp(currentClass.course_number, className)
+                % only want specified course
+                gpaOverTime.(currentSemester) = currentClass.classGPA;
+            end
         end
     end
 end
