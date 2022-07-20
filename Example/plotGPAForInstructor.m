@@ -94,8 +94,8 @@ end
 
 % Sorting semesters (bubblesort) from oldest to newest
 for i=1:numel(semesterTimes)
-    for j = i:(numel(semesterTimes) - i)
-        if semesterTimes{j} < semesterTimes{j + 1}
+    for j = 1:(numel(semesterTimes) - i)
+        if semesterTimes{j} > semesterTimes{j + 1}
             temp = semesterTimes{j};
             semesterTimes{j} = semesterTimes{j + 1};
             semesterTimes{j + 1} = temp;
