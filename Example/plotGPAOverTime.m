@@ -1,8 +1,8 @@
 % Developed by: Zachary Schmidt, Jason Kim
 % Summer 2022, University of Alberta
 
-% Plots the average GPA for each semester that a course is offered by one
-% instructor. The plot is a bar graph.
+% Plots the average GPA for each semester that a course is offered.
+% The plot is a simple bar graph.
 % Usage: instructor can be the main or alt name of an instructor or '*' to
 % plot for all instructors of that course. className should be the main or
 % alt name for a class. (main/alt names in configuration file)
@@ -10,7 +10,7 @@
 %   classData (struct) - struct with all data parsed from grade
 %   distribution files by readExcelFile.m
 %   instructor (char array) - name of the instructor. Can be a main or
-%   alt name found in configuration_file.xlsx
+%   alt name found in configuration_file.xlsx or '*' for all instructors
 %   className (char array) - name of the course. Can be a main or alt
 %   name found in configuration_file.xlsx
 function plotGPAOverTime(classData, instructor, className)
@@ -33,7 +33,6 @@ if allInstructors == 0
         configFieldName = configData.Instructors{i}{1};
         for j = 1:numel(configData.Instructors{i})
             % check if entry is an alternative name
-            % replace flags with original values
             if strcmp(instructor, configData.Instructors{i}{j})
                 % alternative name found
                 foundAltName = 1;
@@ -53,7 +52,6 @@ for i = 1:numel(configData.CourseNums)
     configFieldName = configData.CourseNums{i}{1};
     for j = 1:numel(configData.CourseNums{i})
         % check if entry is an alternative name
-        % replace flags with original values
         if strcmp(className, configData.CourseNums{i}{j})
             % alternative name found
             foundAltName = 1;
@@ -70,7 +68,7 @@ semesters = fieldnames(classData);
 gpaOverTime = struct;
 
 % Creating gpaOverTime struct with field as semester (eg: 'S2021', 'W1986')
-% and value as average GPA
+% and value as average GPA for that semester
 for i=1:numel(semesters)
     currentSemester = char(semesters(i));
     for j=1:numel(classData.(currentSemester))
@@ -86,7 +84,7 @@ for i=1:numel(semesters)
 end
 
 % Creating cell array of semesters in datetime format (datetime allows for
-% easy comparison using <, >)
+% easy comparison during sorting using <, >)
 semesterTimes = {};
 includedSemesters = fieldnames(gpaOverTime);
 for i=1:numel(includedSemesters)
@@ -108,7 +106,8 @@ end
 % Sorting semesters (bubblesort) from oldest to newest
 for i=1:numel(semesterTimes)
     for j = 1:(numel(semesterTimes) - i)
-        if semesterTimes{j} > semesterTimes{j + 1}
+        if semesterTimes{j} > semesterTimes{j + 1}  % if right sem is older than left sem
+            % swap adjacent entries
             temp = semesterTimes{j};
             semesterTimes{j} = semesterTimes{j + 1};
             semesterTimes{j + 1} = temp;
@@ -116,7 +115,7 @@ for i=1:numel(semesterTimes)
     end
 end
 
-% Converting datetimes back to original format of semesters
+% Converting datetimes back to original format of semesters (eg: 'F2021')
 charSortedSems = {};
 for i=1:numel(semesterTimes)
     [year, month, ~] = ymd(semesterTimes{i});
@@ -130,7 +129,7 @@ for i=1:numel(semesterTimes)
     charSortedSems{end + 1} = strcat(season, num2str(year));
 end
 
-gpaList = [];  % sorted list of GPAs
+gpaList = [];  % list of GPAs sorted by time (older semesters come first)
 for i=1:numel(charSortedSems)
     gpaList(end + 1) = gpaOverTime.(charSortedSems{i});
 end
