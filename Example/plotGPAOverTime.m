@@ -3,6 +3,9 @@
 
 % Plots the average GPA for each semester that a course is offered by one
 % instructor. The plot is a bar graph.
+% Usage: instructor can be the main or alt name of an instructor or '*' to
+% plot for all instructors of that course. className should be the main or
+% alt name for a class. (main/alt names in configuration file)
 % Parameters:
 %   classData (struct) - struct with all data parsed from grade
 %   distribution files by readExcelFile.m
