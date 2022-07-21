@@ -9,11 +9,11 @@
 % Parameters:
 %   classData (struct) - struct with all data parsed from grade
 %   distribution files by readExcelFile.m
-%   instructor (char array) - name of the instructor. Can be a main or
-%   alt name found in configuration_file.xlsx or '*' for all instructors
 %   className (char array) - name of the course. Can be a main or alt
 %   name found in configuration_file.xlsx
-function plotGPAOverTime(classData, instructor, className)
+%   instructor (char array) - name of the instructor. Can be a main or
+%   alt name found in configuration_file.xlsx or '*' for all instructors
+function plotGPAOverTime(classData, className, instructor)
 
 allInstructors = 0;
 if strcmp(instructor, '*')
@@ -71,9 +71,19 @@ gpaOverTime = struct;
 % and value as average GPA for that semester
 for i=1:numel(semesters)
     currentSemester = char(semesters(i));
+    totalGpa = 0;
+    numCourses = 0;
     for j=1:numel(classData.(currentSemester))
         currentClass = classData.(currentSemester)(j);
-        if strcmp(currentClass.instructor, instructor) || allInstructors == 1
+        if allInstructors == 1
+            % Need to accumulate gpa & average after
+            if strcmp(currentClass.course_number, className)
+                % only want specified course
+                totalGpa = totalGpa + currentClass.classGPA;
+                numCourses = numCourses + 1;
+            end
+            gpaOverTime.(currentSemester) = totalGpa/numCourses;  % average over all course sections
+        elseif strcmp(currentClass.instructor, instructor)
             % only want sepcified instructor (or all instructors)
             if strcmp(currentClass.course_number, className)
                 % only want specified course
