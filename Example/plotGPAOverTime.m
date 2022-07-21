@@ -95,21 +95,21 @@ end
 
 % Creating cell array of semesters in datetime format (datetime allows for
 % easy comparison during sorting using <, >)
-semesterTimes = {};
 includedSemesters = fieldnames(gpaOverTime);
+semesterTimes = cell(numel(includedSemesters), 1);
 for i=1:numel(includedSemesters)
     currSem = char(includedSemesters{i});
     if strcmp(currSem(1), 'W')
         % if in winter, set date as Jan 1 of the year
-        semesterTimes{end + 1} = datetime(str2num(currSem(2:5)), 1, 1);
+        semesterTimes{i} = datetime(str2double(currSem(2:5)), 1, 1);
     end
     if strcmp(currSem(1), 'S')
         % if in summer, set date as May 1 of the year
-        semesterTimes{end + 1} = datetime(str2num(currSem(2:5)), 5, 1);
+        semesterTimes{i} = datetime(str2double(currSem(2:5)), 5, 1);
     end
     if strcmp(currSem(1), 'F')
         % if in fall, set date as Sep 1 of the year
-        semesterTimes{end + 1} = datetime(str2num(currSem(2:5)), 9, 1);
+        semesterTimes{i} = datetime(str2double(currSem(2:5)), 9, 1);
     end
 end
 
@@ -126,7 +126,7 @@ for i=1:numel(semesterTimes)
 end
 
 % Converting datetimes back to original format of semesters (eg: 'F2021')
-charSortedSems = {};
+charSortedSems = cell(numel(semesterTimes), 1);
 for i=1:numel(semesterTimes)
     [year, month, ~] = ymd(semesterTimes{i});
     if month == 1
@@ -136,12 +136,12 @@ for i=1:numel(semesterTimes)
     elseif month == 9
         season = 'F';
     end
-    charSortedSems{end + 1} = strcat(season, num2str(year));
+    charSortedSems{i} = strcat(season, num2str(year));
 end
 
-gpaList = [];  % list of GPAs sorted by time (older semesters come first)
+gpaList = zeros(numel(charSortedSems), 1);  % list of GPAs sorted by time (older semesters come first)
 for i=1:numel(charSortedSems)
-    gpaList(end + 1) = gpaOverTime.(charSortedSems{i});
+    gpaList(i) = gpaOverTime.(charSortedSems{i});
 end
 
 xAxis = categorical(charSortedSems);  % allows for plotting on bar graph
