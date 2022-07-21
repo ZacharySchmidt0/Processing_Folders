@@ -84,7 +84,7 @@ for i=1:numel(semesters)
             end
             gpaOverTime.(currentSemester) = totalGpa/numCourses;  % average over all course sections
         elseif strcmp(currentClass.instructor, instructor)
-            % only want sepcified instructor (or all instructors)
+            % only want sepcified instructor
             if strcmp(currentClass.course_number, className)
                 % only want specified course
                 gpaOverTime.(currentSemester) = currentClass.classGPA;
@@ -148,6 +148,6 @@ xAxis = categorical(charSortedSems);  % allows for plotting on bar graph
 xAxis = reordercats(xAxis, charSortedSems);  % ensures order is unchanged when plotting
 
 bar(xAxis, gpaList)
-title(['Average Class GPA for instructor:', ' ', instructor, ' ', 'in class:', ' ', className])
+title(['Average Class GPA for Instructor:', ' ', instructor, ' ', 'in Class:', ' ', className])
 xlabel('Semester')
 ylabel('Avergae GPA (/4.0)')
