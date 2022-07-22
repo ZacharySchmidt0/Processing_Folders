@@ -1,6 +1,16 @@
 % Developed by: Zachary Schmidt, Jason Kim
 % Summer 2022, University of Alberta
 
+% Plots the grade distributions for one course (& one or all instructors).
+% The grade distribution for each semester is plotted on a separate figure
+% window.
+% Parameters:
+%   classData (struct) - struct with all data parsed from grade
+%   distribution files by readExcelFile.m
+%   className (char array) - name of the course. Can be a main or alt
+%   name found in configuration_file.xlsx
+%   instructor (char array) - name of the instructor. Can be a main or
+%   alt name found in configuration_file.xlsx or '*' for all instructors
 function plotDistributionsOverTime(classData, className, instructor)
 
 allInstructors = 0;
@@ -55,15 +65,16 @@ end
 semesters = fieldnames(classData);
 distOverTime = struct;
 
-% Creating gpaOverTime struct with field as semester (eg: 'S2021', 'W1986')
-% and value as average GPA for that semester
+% Creating distOverTime struct with field as semester (eg: 'S2021', 'W1986')
+% and value as another struct with field as course name (with section
+% number) and value as a struct containing the grade distribution
 for i=1:numel(semesters)
     currentSemester = char(semesters(i));
     distOverTime.(currentSemester) = struct;
     for j=1:numel(classData.(currentSemester))
         currentClass = classData.(currentSemester)(j);
         if allInstructors == 1
-            % Need to accumulate gpa & average after
+            % include all instructors
             if strcmp(currentClass.course_number, className)
                 % only want specified course
                 distOverTime.(currentSemester).(strrep(strcat(currentClass.course_number, currentClass.section), ' ', '')) = currentClass.Grades;
@@ -78,18 +89,35 @@ for i=1:numel(semesters)
     end
 end
 
-% Creating cell array of semesters in datetime format (datetime allows for
-% easy comparison during sorting using <, >)
-includedSemesters = fieldnames(distOverTime);
+includedSemesters  = fieldnames(distOverTime);
+figures = [];  % each semester is plot on a new figure window
 
 for i=1:numel(includedSemesters)
-    sectionNames = fieldnames(distOverTime.(includedSemesters(i)));
-    
+    sectionNames = fieldnames(distOverTime.(includedSemesters{i}));  % could have many course sections
+    for j=1:numel(sectionNames)
+        gradeNames = fieldnames(distOverTime.(includedSemesters{i}).(sectionNames{j}));
+        yAxis = zeros(numel(gradeNames), 1);
+        plotNames = gradeNames;
+        for m=1:numel(gradeNames)
+            % field names couldn't have + or - in name, can change it back
+            plotNames{m} = strrep(plotNames{m}, '_plus', '+');
+            plotNames{m} = strrep(plotNames{m}, '_minus', '-');
+        end
+        xAxis = categorical(flip(plotNames));  % flip xaxis order
+        xAxis = reordercats(xAxis, flip(plotNames));  % lock the order in
+        for k=1:numel(gradeNames)
+            % pulling the number of students achieving each grade
+            numStudents = distOverTime.(includedSemesters{i}).(sectionNames{j}).(gradeNames{k}).NumberOfStudents;
+            yAxis(k) = numStudents;
+        end
+        % plotting the data in new figure window
+    figures(end + 1) = figure;
+    figure(figures(end))
+    bar(xAxis, yAxis)
+    title(['Grade Dist for Semester:', ' ', includedSemesters{i}, ' ', 'and Class:', ' ', className, '. Instructor:', ' ', instructor])
+    end
+end
 
-xAxis = categorical(includedSemesters);  % allows for plotting on bar graph
-xAxis = reordercats(xAxis, charSortedSems);  % ensures order is unchanged when plotting
 
-bar(xAxis, gpaList)
-title(['Average Class GPA for Instructor:', ' ', instructor, ' ', 'in Class:', ' ', className])
-xlabel('Semester')
-ylabel('Avergae GPA (/4.0)')
+
+
