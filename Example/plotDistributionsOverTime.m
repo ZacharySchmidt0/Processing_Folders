@@ -86,16 +86,23 @@ for i=1:numel(includedSemesters)
     sectionNames = fieldnames(distOverTime.(includedSemesters{i}));
     for j=1:numel(sectionNames)
         gradeNames = fieldnames(distOverTime.(includedSemesters{i}).(sectionNames{j}));
-        xAxis = categorical(gradeNames);
-        xAxis = reordercats(xAxis, gradeNames);
+        plotNames = gradeNames;
+        for m=1:numel(gradeNames)
+            plotNames{m} = strrep(plotNames{m}, '_plus', '+');
+            plotNames{m} = strrep(plotNames{m}, '_minus', '-');
+        end
+        xAxis = categorical(flip(plotNames));
+        xAxis = reordercats(xAxis, flip(plotNames));
         for k=1:numel(gradeNames)
             numStudents = distOverTime.(includedSemesters{i}).(sectionNames{j}).(gradeNames{k}).NumberOfStudents;
             yAxis(end + 1) = numStudents;
         end
     end
+    xAxis = flip(xAxis);
     figures(end + 1) = figure;
     figure(figures(end))
     bar(xAxis, yAxis)
+    title(['Grade Dist for Semester:', ' ', includedSemesters{i}, ' ', 'and Class:', ' ', className, '. Instructor:', ' ', instructor])
 end
 
 
