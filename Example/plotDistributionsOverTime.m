@@ -79,6 +79,7 @@ for i=1:numel(semesters)
 end
 
 includedSemesters  = fieldnames(distOverTime);
+figures = [];
 
 for i=1:numel(includedSemesters)
     yAxis = [];
@@ -92,6 +93,8 @@ for i=1:numel(includedSemesters)
             yAxis(end + 1) = numStudents;
         end
     end
+    figures(end + 1) = figure;
+    figure(figures(end))
     bar(xAxis, yAxis)
 end
 
