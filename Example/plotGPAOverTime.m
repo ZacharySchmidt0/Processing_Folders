@@ -42,7 +42,7 @@ if allInstructors == 0
     end
     if foundAltName == 0
         % entry is not main or alt name
-        error('Instructor name is not a main or alt name found in config file')
+        warning('Instructor name is not a main or alt name found in config file')
     end
 end
 
@@ -61,7 +61,7 @@ for i = 1:numel(configData.CourseNums)
 end
 if foundAltName == 0
     % entry is not main or alt name
-    error('Class name is not a main or alt name found in config file')
+    warning('Class name is not a main or alt name found in config file')
 end
 
 semesters = fieldnames(classData);
