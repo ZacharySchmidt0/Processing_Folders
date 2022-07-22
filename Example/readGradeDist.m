@@ -83,8 +83,7 @@ for row = 3:4  % rows 3 and 4 contain info about class (instructor, dept)
                         if foundAltName == 0
                             % entry is not main or alt name
                             errormsg = ['Invaild department. The entry "', Class{row, col}, '" on row ', num2str(row), ' and column ', num2str(col), ' in file "', filename, '" is not present in the configuration file as a vaild department name.'];
-                            % disp(errormsg)
-                            error(errormsg)
+                            warning(errormsg)
                         end
                     case 'instructor'
                         foundAltName = 0;
@@ -103,8 +102,7 @@ for row = 3:4  % rows 3 and 4 contain info about class (instructor, dept)
                         if foundAltName == 0
                             % entry is not main or alt name
                             errormsg = ['Invaild instructor. The entry "', Class{row, col}, '" on row ', num2str(row), ' and column ', num2str(col), ' in file "', filename, '" is not present in the configuration file as a vaild instructor name.'];
-                            % disp(errormsg)
-                            error(errormsg)
+                            warning(errormsg)
                         end
                     case 'course_number'
                         foundAltName = 0;
@@ -123,7 +121,7 @@ for row = 3:4  % rows 3 and 4 contain info about class (instructor, dept)
                         if foundAltName == 0
                             % entry is not main or alt name
                                   errormsg = ['Invaild course name. The entry "', Class{row, col}, '" on row ', num2str(row), ' and column ', num2str(col), ' in file "', filename, '" is not present in the configuration file as a vaild course name.'];
-                            error(errormsg)
+                            warning(errormsg)
                         end
                 end
                 classData.(field) = Class{row, col};
