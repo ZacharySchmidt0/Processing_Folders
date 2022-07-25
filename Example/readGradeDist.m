@@ -3,11 +3,9 @@
 
 % Parses one Grade Distribution file and organizes
 % the data into a struct.
-%
 % Parameters:
-%   filename (string or char array): name of the grade distribution file to
+%   filename (string or char array): path of the grade distribution file to
 %   be parsed
-% 
 % Returns: 
 % classData: struct with fields:
 %   Department (char array)
@@ -24,7 +22,7 @@
 %       GradePointxNumber (double): totals grade points earned in class
 %   classGPA (double): mean GPA for course
 %   medianGrade (char array): median letter grade for course
-function classData = readGradeDist(filename, configData)
+function [classData, errorCell] = readGradeDist(filename, configData, errorCell)
 
 close all
 
@@ -45,7 +43,7 @@ if strcmp(Class{3, 12}, '')
     Class(cellfun(@(x) isa(x,'missing'), Class)) = {''};
     if strcmp(Class{3, 12}, '')
         % No instructor name on any sheet
-        error('Instructor is blank on all sheets in file ' + filename)
+        warning('Instructor is blank on all sheets in file ' + filename)
     end
 end
 
@@ -64,7 +62,6 @@ for row = 3:4  % rows 3 and 4 contain info about class (instructor, dept)
                 valueFlag = 1;
             elseif valueFlag == 1
                 % cell is a value
-                % errormsg = ['The entry on row ', num2str(row), ' and column ', num2str(col), ' in file "', filename, '" is not present in the configuration file.'];
                 switch field
                     case 'department'
                         foundAltName = 0;
@@ -107,6 +104,9 @@ for row = 3:4  % rows 3 and 4 contain info about class (instructor, dept)
                             end
                             classData.Totals.NumberOfStudents = 0;
                             classData.Totals.GradePointxNumber = 0;
+                            errorCell{end + 1, 1} = 'Department';
+                            errorCell{end, 2} = Class{row, col};
+                            errorCell{end, 3} = filename;
                             return
                         end
                     case 'instructor'
@@ -150,6 +150,9 @@ for row = 3:4  % rows 3 and 4 contain info about class (instructor, dept)
                             end
                             classData.Totals.NumberOfStudents = 0;
                             classData.Totals.GradePointxNumber = 0;
+                            errorCell{end + 1, 1} = 'Instructor';
+                            errorCell{end, 2} = Class{row, col};
+                            errorCell{end, 3} = filename;
                             return
                         end
                     case 'course_number'
@@ -193,6 +196,9 @@ for row = 3:4  % rows 3 and 4 contain info about class (instructor, dept)
                             end
                             classData.Totals.NumberOfStudents = 0;
                             classData.Totals.GradePointxNumber = 0;
+                            errorCell{end + 1, 1} = 'Course Name';
+                            errorCell{end, 2} = Class{row, col};
+                            errorCell{end, 3} = filename;
                             return
                         end
                 end
