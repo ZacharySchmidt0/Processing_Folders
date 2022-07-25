@@ -84,7 +84,30 @@ for row = 3:4  % rows 3 and 4 contain info about class (instructor, dept)
                             % entry is not main or alt name
                             errormsg = ['Invaild department. The entry "', Class{row, col}, '" on row ', num2str(row), ' and column ', num2str(col), ' in file "', filename, '" is not present in the configuration file as a vaild department name.'];
                             warning(errormsg)
+                            classData.department = "";
+                            classData.instructor = "";
+                            classData.course_number = "";
+                            classData.section = "";
+                            classData.number_of_students_in_class = 0;
+                            classData.classGPA = 0.0;
+                            classData.medianGrade = 0.0;
+                             for x = 8:19
+                                % the main class data in rows 8-19
+                                letterGrade = Class{x, 3};
+                                letterGrade = strrep(letterGrade, '+', '_plus');  % field names can't contain +
+                                letterGrade = strrep(letterGrade, '–', '_minus');  % field names can't contain -
 
+                                % save the cell data in appropriate field
+                                % FIXME: locations of data harcoded for now
+                                classData.Grades.(letterGrade).GPA = 0.0;
+                                classData.Grades.(letterGrade).NumberOfStudents = 0;
+                                classData.Grades.(letterGrade).GradePointxNumber = 0.0;
+                                classData.Grades.(letterGrade).PercentOfStudents = 0.0;
+                                classData.Grades.(letterGrade).SuggestedPercent = 0.0;
+                            end
+                            classData.Totals.NumberOfStudents = 0;
+                            classData.Totals.GradePointxNumber = 0;
+                            return
                         end
                     case 'instructor'
                         foundAltName = 0;
@@ -104,7 +127,30 @@ for row = 3:4  % rows 3 and 4 contain info about class (instructor, dept)
                             % entry is not main or alt name
                             errormsg = ['Invaild instructor. The entry "', Class{row, col}, '" on row ', num2str(row), ' and column ', num2str(col), ' in file "', filename, '" is not present in the configuration file as a vaild instructor name.'];
                             warning(errormsg)
+                            classData.department = "";
+                            classData.instructor = "";
+                            classData.course_number = "";
+                            classData.section = "";
+                            classData.number_of_students_in_class = 0;
+                            classData.classGPA = 0.0;
+                            classData.medianGrade = 0.0;
+                             for x = 8:19
+                                % the main class data in rows 8-19
+                                letterGrade = Class{x, 3};
+                                letterGrade = strrep(letterGrade, '+', '_plus');  % field names can't contain +
+                                letterGrade = strrep(letterGrade, '–', '_minus');  % field names can't contain -
 
+                                % save the cell data in appropriate field
+                                % FIXME: locations of data harcoded for now
+                                classData.Grades.(letterGrade).GPA = 0.0;
+                                classData.Grades.(letterGrade).NumberOfStudents = 0;
+                                classData.Grades.(letterGrade).GradePointxNumber = 0.0;
+                                classData.Grades.(letterGrade).PercentOfStudents = 0.0;
+                                classData.Grades.(letterGrade).SuggestedPercent = 0.0;
+                            end
+                            classData.Totals.NumberOfStudents = 0;
+                            classData.Totals.GradePointxNumber = 0;
+                            return
                         end
                     case 'course_number'
                         foundAltName = 0;
@@ -124,7 +170,30 @@ for row = 3:4  % rows 3 and 4 contain info about class (instructor, dept)
                             % entry is not main or alt name
                             errormsg = ['Invaild course name. The entry "', Class{row, col}, '" on row ', num2str(row), ' and column ', num2str(col), ' in file "', filename, '" is not present in the configuration file as a vaild course name.'];
                             warning(errormsg)
+                            classData.department = "";
+                            classData.instructor = "";
+                            classData.course_number = "";
+                            classData.section = "";
+                            classData.number_of_students_in_class = 0;
+                            classData.classGPA = 0.0;
+                            classData.medianGrade = 0.0;
+                            for x = 8:19
+                                % the main class data in rows 8-19
+                                letterGrade = Class{x, 3};
+                                letterGrade = strrep(letterGrade, '+', '_plus');  % field names can't contain +
+                                letterGrade = strrep(letterGrade, '–', '_minus');  % field names can't contain -
 
+                                % save the cell data in appropriate field
+                                % FIXME: locations of data harcoded for now
+                                classData.Grades.(letterGrade).GPA = 0.0;
+                                classData.Grades.(letterGrade).NumberOfStudents = 0;
+                                classData.Grades.(letterGrade).GradePointxNumber = 0.0;
+                                classData.Grades.(letterGrade).PercentOfStudents = 0.0;
+                                classData.Grades.(letterGrade).SuggestedPercent = 0.0;
+                            end
+                            classData.Totals.NumberOfStudents = 0;
+                            classData.Totals.GradePointxNumber = 0;
+                            return
                         end
                 end
                 classData.(field) = Class{row, col};
