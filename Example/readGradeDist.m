@@ -2,6 +2,7 @@
 % Summer 2022, University of Alberta
 
 % Parses one Grade Distribution file and organizes the data into a struct.
+%
 % Parameters:
 %   filename (string or char array): relative path of the grade 
 %   distribution file to be parsed
@@ -9,6 +10,7 @@
 %   using readConfig.m
 %   errorCell (cell array): cell array holding info about mismatches
 %   between grade dist files and config file
+%
 % Returns: 
 %   errorCell (cell array): any mismatches with config file are appended
 %   classData: struct with fields:

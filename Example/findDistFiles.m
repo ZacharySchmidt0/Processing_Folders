@@ -3,7 +3,7 @@
 
 % Searches through a folder for all Excel files with grade distributions.
 % Returns the semester names and path to each Excel file.
-
+%
 % Parameters:
 %   folderName (char array): name of the folder that contains grade dist.
 %   Excel files

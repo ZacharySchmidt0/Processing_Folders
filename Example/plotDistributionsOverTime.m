@@ -4,6 +4,7 @@
 % Plots the grade distributions for one course (& one or all instructors).
 % The grade distribution for each semester is plotted on a separate figure
 % window.
+%
 % Parameters:
 %   classData (struct) - struct with all data parsed from grade
 %   distribution files by readExcelFile.m
@@ -118,7 +119,3 @@ for i=1:numel(includedSemesters)
         title(['Grade Dist for Semester:', ' ', includedSemesters{i}, ' ', 'and Class:', ' ', className, '. Instructor:', ' ', instructor])
     end
 end
-
-
-
-
