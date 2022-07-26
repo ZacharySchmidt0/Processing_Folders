@@ -7,7 +7,7 @@
 %
 % Parameters:
 %   classData (struct) - struct with all data parsed from grade
-%   distribution files by readExcelFile.m
+%   distribution files by readExcelFiles.m
 %   className (char array) - name of the course. Can be a main or alt
 %   name found in configuration_file.xlsx
 %   instructor (char array) - name of the instructor. Can be a main or
@@ -25,7 +25,8 @@ configData = readConfig('configuration_file');
 
 % Checking if instructor name is a main or alt name. If it is a main name, 
 % it is left alone. If it is an alt name, it is converted to the main name.
-% If it is not a main or alt name, an error is thrown.
+% If it is not a main or alt name, an warning is thrown & line added to
+% ConfigErrors.xlsx
 if allInstructors == 0
     foundAltName = 0;
     for i = 1:numel(configData.Instructors)

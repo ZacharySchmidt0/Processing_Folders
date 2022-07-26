@@ -1,6 +1,6 @@
 Developers: Zachary Schmidt, Jason Kim
 Oversight: Dr. David Nobes
-Summer 2022 University of Alberta
+Summer 2022, University of Alberta
 
 Purpose:
 The purpose of this project is to parse grade distribution Excel files. These files are derived from a template file
@@ -9,8 +9,8 @@ other faculty the ability to easily see the distribution of grades for a particu
 
 This project helps to amalgamate the data into one location, where it can then be plotted using the included functions.
 
-Entry File: readExcelFile.m
-The readExcelFile.m script will parse the configuration file (configuration_file.xlsx) then search through the Distribution
+Entry File: readExcelFiles.m
+The readExcelFiles.m script will parse the configuration file (configuration_file.xlsx) then search through the Distribution
 Files folder, extracting information from each of the grade distribution files (after checking if the file follows the grade
 distribution template). While extracting this information, the program compares the department name, instructor name, and 
 course name to the names found in the configuration file. If the name does not match any of the config file names, 
@@ -25,11 +25,11 @@ Configuration File format:
 
 Plotting Functions:
 
-plotGPAOverTime: plots the average GPA for one course (one or all instructors) over all semesters that course is offered
+	plotGPAOverTime: plots the average GPA for one course (one or all instructors) over all semesters that course is offered
 
-plotDistributionsOverTime: plots the grade distribution for one course (one or all instructors). Each semester is displayed
-in a new figure window.
+	plotDistributionsOverTime: plots the grade distribution for one course (one or all instructors). Each semester is displayed
+	in a new figure window.
 
 Other functions:
 
-findAverageGPAforCourse: determines the overall average GPA for a course over all semesters
+	findAverageGPAforCourse: determines the overall average GPA for a course over all semesters

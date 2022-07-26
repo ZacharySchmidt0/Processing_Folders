@@ -2,15 +2,15 @@
 % Summer 2022, University of Alberta
 
 % Searches through a folder for all Excel files with grade distributions.
-% Returns the semester names and path to each Excel file.
+% Returns the semester name and path to each Excel file.
 %
 % Parameters:
-%   folderName (char array): name of the folder that contains grade dist.
+%   folderName (char array): name of the folder that contains grade dist
 %   Excel files
 %
 % Returns:
 %   distFiles (struct): fields are semester names and the value in each
-%   field is a cell array of the paths to all the grade dist. Excel files
+%   field is a cell array of the paths to all the grade dist Excel files
 %   taken in that semester
 function distFiles = findDistFiles(folderName)
 
