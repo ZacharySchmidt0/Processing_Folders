@@ -29,3 +29,7 @@ plotGPAOverTime: plots the average GPA for one course (one or all instructors) o
 
 plotDistributionsOverTime: plots the grade distribution for one course (one or all instructors). Each semester is displayed
 in a new figure window.
+
+Other functions:
+
+findAverageGPAforCourse: determines the overall average GPA for a course over all semesters
