@@ -1,4 +1,13 @@
-function average = plotGPAForCourse(classData, course)
+% Developed by: Zachary Schmidt, Jason Kim
+% Summer 2022, University of Alberta
+
+% Function that takes in a course and the classData struct and detrimines
+% the average GPA over all semesters provided
+% Parameters:
+%   classData (sturct) - the struct containing the grade distrubution data
+%   course - (char array) - the name of the course
+% Returns: the average GPA for that course over all semesters (double)
+function average = findAverageGPAforCourse(classData, course)
     fieldNms = fieldnames(classData);
     GPtotal = 0
     studentTotal = 0
